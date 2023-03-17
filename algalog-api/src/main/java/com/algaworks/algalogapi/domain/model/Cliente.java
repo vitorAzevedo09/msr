@@ -27,4 +27,8 @@ public class Cliente {
     private String email;
     private String telefone;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }
