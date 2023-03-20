@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algalogapi.domain.model.Cliente;
 import com.algaworks.algalogapi.domain.repository.ClienteRepository;
+import com.algaworks.algalogapi.domain.service.CatalogoClienteService;
 
 import lombok.AllArgsConstructor;
 
@@ -30,6 +31,7 @@ import lombok.AllArgsConstructor;
 public class ClienteController {
 
     private ClienteRepository clienteRepository;
+    private CatalogoClienteService clienteService;
 
     @GetMapping
     public List<Cliente> listar() {
@@ -45,14 +47,14 @@ public class ClienteController {
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public Cliente adicionar(@Valid @RequestBody Cliente cliente) {
-        return clienteRepository.save(cliente);
+        return clienteService.salvar(cliente);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Cliente> atualizar(@PathVariable Long id, @Valid @RequestBody Cliente cliente) {
         if (clienteRepository.existsById(id)) {
             cliente.setId(id);
-            return ResponseEntity.ok(clienteRepository.save(cliente));
+            return ResponseEntity.ok(clienteService.salvar(cliente));
         }
         return ResponseEntity.notFound().build();
     }
@@ -62,7 +64,7 @@ public class ClienteController {
         if (!clienteRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
-        clienteRepository.deleteById(id);
+        clienteService.excluir(id);
         return ResponseEntity.noContent().build();
     }
 
