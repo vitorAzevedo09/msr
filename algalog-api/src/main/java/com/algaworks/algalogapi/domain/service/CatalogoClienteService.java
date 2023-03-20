@@ -19,18 +19,24 @@ import lombok.AllArgsConstructor;
 public class CatalogoClienteService {
     private ClienteRepository clienteRepository;
 
+    public Cliente buscar(Long id) {
+        return clienteRepository.findById(id)
+                .orElseThrow(() -> new NegocioException("Cliente não encontrado"));
+    }
+
     @Transactional
     public Cliente salvar(Cliente cliente) {
-        boolean emailEmUso = clienteRepository.findByEmail(cliente.getEmail()).stream().anyMatch(c -> !c.equals(cliente))
-        if(emailEmUso){
-            throw new NegocioException("Já existe um usuário cadastrado com esse e-mail.")
+        boolean emailEmUso = clienteRepository.findByEmail(cliente.getEmail()).stream()
+                .anyMatch(c -> !c.equals(cliente));
+        if (emailEmUso) {
+            throw new NegocioException("Já existe um usuário cadastrado com esse e-mail.");
         }
         return clienteRepository.save(cliente);
     }
 
     @Transactional
     public void excluir(Long clienteId) {
-        return clienteRepository.deleteById(clienteId);
+        clienteRepository.deleteById(clienteId);
     }
 
 }

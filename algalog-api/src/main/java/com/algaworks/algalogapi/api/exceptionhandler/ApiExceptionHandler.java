@@ -52,14 +52,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NegocioException.class)
     public ResponseEntity<Object> handleNegocio(NegocioException ex, WebRequest req) {
-        HttpStatus status = HttpStatus.BAD_REQUEST
+        HttpStatus status = HttpStatus.BAD_REQUEST;
 
         Problema problema = new Problema();
 
         problema.setStatus(status.value());
         problema.setDataHora(LocalDateTime.now());
         problema.setTitulo(ex.getMessage());
-        problema.setCampos(campos);
-        return handleExceptionInternal(ex, problema, new HttpHeaders(), status, req)
+        return handleExceptionInternal(ex, problema, new HttpHeaders(), status, req);
     }
 }

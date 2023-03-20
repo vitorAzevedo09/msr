@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@JsonInclude(valueFilter = Include.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class Problema {
 
     private Integer status;
@@ -22,6 +22,7 @@ public class Problema {
 
     @AllArgsConstructor
     @Getter
+    @Setter
     public static class Campo {
         public String nome;
         public String mensagem;
