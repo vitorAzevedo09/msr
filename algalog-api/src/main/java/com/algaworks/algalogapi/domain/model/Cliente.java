@@ -1,11 +1,12 @@
 package com.algaworks.algalogapi.domain.model;
 
-import javax.validation.constraints.*;
-
 import javax.persistence.Entity;
-import javax.persistence.GenerationType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -38,9 +39,5 @@ public class Cliente {
     @Size(max = 20)
     @NotBlank
     private String telefone;
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
 }
