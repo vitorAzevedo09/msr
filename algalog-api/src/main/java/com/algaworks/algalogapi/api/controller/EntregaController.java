@@ -1,9 +1,12 @@
 package com.algaworks.algalogapi.api.controller;
 
-import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +18,7 @@ import com.algaworks.algalogapi.domain.model.Cliente;
 import com.algaworks.algalogapi.domain.model.Entrega;
 import com.algaworks.algalogapi.domain.model.StatusEntrega;
 import com.algaworks.algalogapi.domain.repository.ClienteRepository;
+import com.algaworks.algalogapi.domain.repository.EntregaRepository;
 import com.algaworks.algalogapi.domain.service.SolitacaoEntregaService;
 
 import lombok.AllArgsConstructor;
@@ -28,10 +32,22 @@ import lombok.AllArgsConstructor;
 public class EntregaController {
     private SolitacaoEntregaService solitacaoEntregaService;
     private ClienteRepository clienteRepository;
+    private EntregaRepository entregaRepository;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public Entrega solicitar(@RequestBody Entrega entrega) {
+    public Entrega solicitar(@Valid @RequestBody Entrega entrega) {
         return solitacaoEntregaService.solicitar(entrega);
+    }
+
+    @GetMapping
+    public List<Entrega> listar() {
+        return entregaRepository.findAll();
+    }
+
+    public ResponseEntity<Entrega> buscar(Long id) {
+        return entregaRepository.findById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 }
