@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algalogapi.api.assembler.EntregaAssembler;
+import com.algaworks.algalogapi.api.model.EntregaModel;
+import com.algaworks.algalogapi.api.model.input.EntregaInput;
 import com.algaworks.algalogapi.domain.exception.NegocioException;
 import com.algaworks.algalogapi.domain.model.Cliente;
 import com.algaworks.algalogapi.domain.model.Entrega;
@@ -31,23 +34,26 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/entregas")
 public class EntregaController {
     private SolitacaoEntregaService solitacaoEntregaService;
-    private ClienteRepository clienteRepository;
+    private EntregaAssembler entregaAssembler;
     private EntregaRepository entregaRepository;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public Entrega solicitar(@Valid @RequestBody Entrega entrega) {
-        return solitacaoEntregaService.solicitar(entrega);
+    public EntregaModel solicitar(@Valid @RequestBody EntregaInput entrega) {
+        Entrega novaEntrega = entregaAssembler.toEntity(entrega);
+        Entrega entregaSolicitada = solitacaoEntregaService.solicitar(novaEntrega);
+        return entregaAssembler.toModel(entregaSolicitada);
     }
 
     @GetMapping
-    public List<Entrega> listar() {
-        return entregaRepository.findAll();
+    public List<EntregaModel> listar() {
+        return entregaAssembler.toCollectionModel(
+                entregaRepository.findAll());
     }
 
-    public ResponseEntity<Entrega> buscar(Long id) {
+    public ResponseEntity<EntregaModel> buscar(Long id) {
         return entregaRepository.findById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+                .map(entrega -> ResponseEntity.ok(entregaAssembler.toModel(entrega)))
+                .orElse(ResponseEntity.notFound().build());
     }
 }
